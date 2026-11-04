@@ -1,0 +1,93 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+using ll = long long;
+const ll INF = (1LL << 60);
+
+struct Edge {
+    int u, v, weight;
+};
+
+int findRoot(int u, vector<int> &parent) {
+    if (parent[u] == u)
+        return u;
+
+    return parent[u] = findRoot(parent[u], parent);
+}
+
+bool unite(int u, int v, vector<int> &parent,
+           vector<int> &sz) {
+
+    u = findRoot(u, parent);
+    v = findRoot(v, parent);
+
+    if (u == v) return false;
+
+    if (sz[u] < sz[v])
+        swap(u, v);
+
+    parent[v] = u;
+    sz[u] += sz[v];
+
+    return true;
+}
+
+ll kruskal(int n, vector<Edge> &edges) {
+    sort(edges.begin(), edges.end(),
+         [](Edge a, Edge b) {
+             return a.weight < b.weight;
+         });
+
+    vector<int> parent(n), sz(n, 1);
+
+    for (int i = 0; i < n; i++)
+        parent[i] = i;
+
+    ll total = 0;
+    int taken = 0;
+
+    for (auto edge : edges) {
+        if (unite(edge.u, edge.v, parent, sz)) {
+            total += edge.weight;
+            taken++;
+
+            if (taken == n - 1)
+                break;
+        }
+    }
+
+    if (taken != n - 1)
+        return INF;
+
+    return total;
+}
+
+int main() {
+    int n, m;
+    cin >> n >> m;
+
+    if (n <= 0 || m < 0) return 0;
+
+    vector<Edge> edges;
+
+    for (int i = 0; i < m; i++) {
+        int u, v, w;
+        cin >> u >> v >> w;
+
+        if (u < 0 || u >= n || v < 0 || v >= n || w < 0)
+            return 0;
+
+        edges.push_back({u, v, w});
+    }
+
+    ll result = kruskal(n, edges);
+
+    if (result == INF)
+        cout << "No MST exists\n";
+    else
+        cout << "Kruskal MST Weight: " << result << '\n';
+
+    return 0;
+}
