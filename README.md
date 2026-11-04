@@ -1,6 +1,4 @@
-C Programming Practice
-
-Welcome to my C Programming Repository!
+ Programming Practice
 
 Name: Noorjahan Sharkar Popy
 
@@ -34,4 +32,4 @@ My Programming Practice
 
 Programming Language
 
-C
+
